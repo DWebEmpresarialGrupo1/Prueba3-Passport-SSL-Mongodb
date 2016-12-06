@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel='stylesheet' href='/stylesheets/style.css'media="screen" />
+    <link rel='stylesheet' href='/stylesheets/nav.css' media="screen" />
+    <link rel='stylesheet' href='/stylesheets/print.css' media="screen" />
+</head>
+<body>
+<div id='main' class="container" >
+    <% if (!user) { %>
+    <div class="page-header text-center">
+        <a href="/login" class="btn btn-default">
+            <span class="fa fa-user"></span> Iniciar Sesion
+        </a>
+        <a href="/signup" class="btn btn-default">
+            <span class="fa fa-user"></span> Registrarse
+        </a>
+    </div>
+    <% } %>
+    <% if (user) { %>
+    <div class="page-header text-center">
+        <strong>Email</strong>: <%= user.local.email %><br>
+        <a href="/logout" class="btn btn-default btn-sm">Cerrar Sesion</a>
+    </div>
+    <% } %>
+    <div class="col-sm-5 col-sm-offset-2 col-md-6 col-md-offset-0">
+        <div class="clearfix">
+
+
+            <div id="content">
+                <h2>NOTICIAS</h2>
+                    <% for(var i = 0; i < noticias.length; i++) { %>
+                    <div class="feature clearfloat" id="lead">
+
+                         <a ><%= noticias[i].fecha %></a> <br/>
+                        <img src="<%= noticias[i].imagen %>" width="300" height="300">
+                        <a href="<%= noticias[i].url %>" target="_blank" class="title"> <%= noticias[i].titulo %></a>
+                        <p><%= noticias[i].cuerpo %></p>
+                        <% if (user) { %>
+                        <form  action="/verMasTarde" method="post">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <input type="hidden" name="userId" value="<%= user._id %>">
+                            <input type="hidden" name="noticiaId" value="<%= noticias[i]._id %>">
+                            <button type="submit" class="btn btn-warning btn-lg"  >Ver más tarde</button>
+                        </form>
+                        <% } %>
+                      </div>
+                    <% } %>
+            </div>
+        </div>
+    </div>
+    <% if (user) { %>
+    <div class="col-sm-5 col-sm-offset-2 col-md-6 col-md-offset-0">
+        <div class="clearfix">
+                <h2>NOTICIAS Guardadas</h2>
+                <div id="rightcol">
+                    <% for(var i = 0; i < noticiasGuardadas.length; i++) { %>
+                    <div class="clearfloat"  >
+                        <a href="#"><img width="150" height="150" src="<%= noticiasGuardadas[i].imagen %>" alt="" /></a>
+                        <a href="<%= noticiasGuardadas[i].url %>" class="title"> <%= noticiasGuardadas[i].titulo %></a>
+                        <p><%= noticiasGuardadas[i].cuerpo %></p>
+                        <form  action="/borrarNoticiaGuardada" method="post">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <input type="hidden" name="userId" value="<%= user._id %>">
+                            <input type="hidden" name="noticiaId" value="<%= noticiasGuardadas[i]._id %>">
+                            <button type="submit" class="btn btn-warning btn-lg"   >Eliminar Noticia</button>
+                        </form>
+                    </div>
+                    <% } %>
+                </div>
+        </div>
+    </div>
+    <% } %>
+</div>
+
+</body>
+</html>
